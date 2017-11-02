@@ -8,7 +8,7 @@ LABEL name="CentOS Base Image" \
 
 CMD ["/bin/bash"]
 
-RUN yum update
+RUN yum update -y
 RUN yum install -qy x11-apps
 ENV DISPLAY :0
 CMD xeyes
