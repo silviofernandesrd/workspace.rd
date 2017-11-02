@@ -1,14 +1,16 @@
-FROM scratch
-ADD centos-7-docker.tar.xz /
+FROM ubuntu:14.04
 
-LABEL name="CentOS Base Image" \
-    vendor="CentOS" \
-    license="GPLv2" \
-    build-date="20170911"
+RUN apt-get update && apt-get install -y firefox
 
-CMD ["/bin/bash"]
+# Replace 1000 with your user / group id
+RUN export uid=1000 gid=1000 && \
+    mkdir -p /home/developer && \
+    echo "developer:x:${uid}:${gid}:Developer,,,:/home/developer:/bin/bash" >> /etc/passwd && \
+    echo "developer:x:${uid}:" >> /etc/group && \
+    echo "developer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/developer && \
+    chmod 0440 /etc/sudoers.d/developer && \
+    chown ${uid}:${gid} -R /home/developer
 
-RUN yum update -y
-RUN yum install -qy x11-apps
-ENV DISPLAY :0
-CMD xeyes
+USER developer
+ENV HOME /home/developer
+CMD /usr/bin/firefox
